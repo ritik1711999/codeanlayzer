@@ -15,7 +15,7 @@ function layout({ children }) {
       </head>
       <body className="bg-black">
         <NavBar />
-        <div>{children}</div>
+        <div className="h-[600px]">{children}</div>
         <Footer />
       </body>
     </html>
