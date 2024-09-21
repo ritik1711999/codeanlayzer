@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+
 import Editor from "@monaco-editor/react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { TbAnalyze } from "react-icons/tb";
 import { IoIosCode } from "react-icons/io";
+import { useState } from "react";
 
 import {
   DropdownMenu,
@@ -11,11 +12,32 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { generateReport } from "@/app/actions/generateReport";
 
-function CodeEditor({ setShowReport, isCodeEditorCollapsed }) {
-  console.log("isCodeEditorCollapsed: ", isCodeEditorCollapsed);
-  const handleAnalysis = () => {
-    setShowReport((prev) => !prev);
+function CodeEditor({
+  setShowReport,
+  isCodeEditorCollapsed,
+  setReport,
+  setLanguage,
+  language,
+  setIsReportLoading,
+}) {
+  const [code, setCode] = useState("");
+
+  const handleEditorChange = (value, event) => {
+    setCode(value);
+  };
+
+  const handleAnalysis = async () => {
+    setShowReport(true);
+    setIsReportLoading(true);
+    const report = await generateReport(code, language);
+    setIsReportLoading(false);
+    setReport(report);
+  };
+
+  const handleLanguageChange = (selectedLanguage) => {
+    setLanguage(selectedLanguage);
   };
 
   if (isCodeEditorCollapsed) {
@@ -28,15 +50,50 @@ function CodeEditor({ setShowReport, isCodeEditorCollapsed }) {
         <div className="flex text-white bg-bgGray py-2 justify-center gap-[1px] transform rotate-90 mb-[100px]">
           <DropdownMenu>
             <DropdownMenuTrigger className="px-2 py-1 flex items-center bg-darkGray rounded-l-lg hover:bg-lightGray focus:outline-none">
-              <div>language</div>
+              <div>{language || "language"}</div>
               <IoMdArrowDropdown className="ml-1" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-bgGray text-white hover:border-none focus:border-none active:border-none">
-              <DropdownMenuItem>javascript</DropdownMenuItem>
-              <DropdownMenuItem>java</DropdownMenuItem>
-              <DropdownMenuItem>python</DropdownMenuItem>
-              <DropdownMenuItem>c++</DropdownMenuItem>
-              <DropdownMenuItem>go</DropdownMenuItem>
+              <DropdownMenuItem
+                key="javascript"
+                onSelect={() => {
+                  handleLanguageChange("javascript");
+                }}
+              >
+                javascript
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                key="java"
+                onSelect={() => {
+                  handleLanguageChange("java");
+                }}
+              >
+                java
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                key="python"
+                onSelect={() => {
+                  handleLanguageChange("python");
+                }}
+              >
+                python
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                key="c++"
+                onSelect={() => {
+                  handleLanguageChange("c++");
+                }}
+              >
+                c++
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                key="go"
+                onSelect={() => {
+                  handleLanguageChange("go");
+                }}
+              >
+                go
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <button
@@ -61,15 +118,45 @@ function CodeEditor({ setShowReport, isCodeEditorCollapsed }) {
         <div className="flex  text-white bg-bgGray justify-center gap-[1px]">
           <DropdownMenu>
             <DropdownMenuTrigger className="px-3 py-1 flex items-center bg-darkGray rounded-l-lg hover:bg-lightGray focus:outline-none">
-              <div>language</div>
+              <div>{language || "language"}</div>
               <IoMdArrowDropdown className="ml-1" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-bgGray text-white hover:border-none focus:border-none active:border-none">
-              <DropdownMenuItem>javascript</DropdownMenuItem>
-              <DropdownMenuItem>java</DropdownMenuItem>
-              <DropdownMenuItem>python</DropdownMenuItem>
-              <DropdownMenuItem>c++</DropdownMenuItem>
-              <DropdownMenuItem>go</DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => {
+                  handleLanguageChange("javascript");
+                }}
+              >
+                javascript
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => {
+                  handleLanguageChange("java");
+                }}
+              >
+                java
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => {
+                  handleLanguageChange("python");
+                }}
+              >
+                python
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => {
+                  handleLanguageChange("c++");
+                }}
+              >
+                c++
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => {
+                  handleLanguageChange("go");
+                }}
+              >
+                go
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <button
@@ -86,6 +173,7 @@ function CodeEditor({ setShowReport, isCodeEditorCollapsed }) {
         defaultLanguage="javascript"
         defaultValue="// some comment"
         theme="vs-dark"
+        onChange={handleEditorChange}
       />
     </>
   );

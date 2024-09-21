@@ -9,10 +9,11 @@ function HomePage() {
   const [showReport, setShowReport] = useState(false);
   const [isCodeEditorCollapsed, setIsCodeEditorCollapsed] = useState(false);
   const [isReportCollapsed, setIsReportCollapsed] = useState(false);
+  const [report, setReport] = useState("");
+  const [language, setLanguage] = useState("javascript");
+  const [isReportLoading, setIsReportLoading] = useState(true);
 
   const handleResizeCodeEditor = (size) => {
-    console.log(size);
-    console.log(isCodeEditorCollapsed);
     if (size < 3) {
       setIsCodeEditorCollapsed(true);
     } else {
@@ -40,6 +41,10 @@ function HomePage() {
         <CodeEditor
           setShowReport={setShowReport}
           isCodeEditorCollapsed={isCodeEditorCollapsed}
+          setReport={setReport}
+          setLanguage={setLanguage}
+          language={language}
+          setIsReportLoading={setIsReportLoading}
         />
       </Panel>
       {showReport && (
@@ -55,7 +60,11 @@ function HomePage() {
             className={`border bg-reportBg border-white rounded-lg text-white`}
             onResize={handleResizeReport}
           >
-            <Report isReportCollapsed={isReportCollapsed} />
+            <Report
+              isReportCollapsed={isReportCollapsed}
+              report={report}
+              isReportLoading={isReportLoading}
+            />
           </Panel>
         </>
       )}
